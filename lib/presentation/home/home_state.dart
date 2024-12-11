@@ -4,14 +4,14 @@ enum Status { loading, error, success }
 
 class HomeState {
   final Status? status;
-  final List<Product>? xitProducts;
+  final List<ProductHive>? xitProducts;
   final String? errorMessage;
 
   HomeState({this.status, this.xitProducts, this.errorMessage});
 
   HomeState copyWith({
     Status? status,
-    List<Product>? xitProducts,
+    List<ProductHive>? xitProducts,
     String? errorMessage
   }) {
     return HomeState(

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:texnomart/data/source/remote/response/sticker.dart';
+import 'package:texnomart/data/source/remote/response/xit_products/sticker.dart';
 
 part 'product.freezed.dart';
 
@@ -28,8 +28,8 @@ class Product with _$Product {
     int? reviewsAverage,
     @JsonKey(name: "reviews_count")
     int? reviewsCount,
-    @JsonKey(name: "sale_months")
-    List<String>? saleMonths,
+    // @JsonKey(name: "sale_months")
+    // List<String>? saleMonths,
     @JsonKey(name: "sale_price")
     int? salePrice,
     List<Sticker>? stickers,

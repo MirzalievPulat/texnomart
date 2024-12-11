@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:texnomart/data/source/remote/response/product.dart';
+import 'package:texnomart/data/source/remote/response/xit_products/product.dart';
 
 part 'datas.freezed.dart';
 part 'datas.g.dart';

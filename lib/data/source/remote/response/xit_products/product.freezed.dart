@@ -38,9 +38,9 @@ mixin _$Product {
   @JsonKey(name: "reviews_average")
   int? get reviewsAverage => throw _privateConstructorUsedError;
   @JsonKey(name: "reviews_count")
-  int? get reviewsCount => throw _privateConstructorUsedError;
-  @JsonKey(name: "sale_months")
-  List<String>? get saleMonths => throw _privateConstructorUsedError;
+  int? get reviewsCount =>
+      throw _privateConstructorUsedError; // @JsonKey(name: "sale_months")
+// List<String>? saleMonths,
   @JsonKey(name: "sale_price")
   int? get salePrice => throw _privateConstructorUsedError;
   List<Sticker>? get stickers => throw _privateConstructorUsedError;
@@ -72,7 +72,6 @@ abstract class $ProductCopyWith<$Res> {
       @JsonKey(name: "old_price") int? oldPrice,
       @JsonKey(name: "reviews_average") int? reviewsAverage,
       @JsonKey(name: "reviews_count") int? reviewsCount,
-      @JsonKey(name: "sale_months") List<String>? saleMonths,
       @JsonKey(name: "sale_price") int? salePrice,
       List<Sticker>? stickers});
 }
@@ -104,7 +103,6 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? oldPrice = freezed,
     Object? reviewsAverage = freezed,
     Object? reviewsCount = freezed,
-    Object? saleMonths = freezed,
     Object? salePrice = freezed,
     Object? stickers = freezed,
   }) {
@@ -157,10 +155,6 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.reviewsCount
           : reviewsCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      saleMonths: freezed == saleMonths
-          ? _value.saleMonths
-          : saleMonths // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
       salePrice: freezed == salePrice
           ? _value.salePrice
           : salePrice // ignore: cast_nullable_to_non_nullable
@@ -193,7 +187,6 @@ abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
       @JsonKey(name: "old_price") int? oldPrice,
       @JsonKey(name: "reviews_average") int? reviewsAverage,
       @JsonKey(name: "reviews_count") int? reviewsCount,
-      @JsonKey(name: "sale_months") List<String>? saleMonths,
       @JsonKey(name: "sale_price") int? salePrice,
       List<Sticker>? stickers});
 }
@@ -223,7 +216,6 @@ class __$$ProductImplCopyWithImpl<$Res>
     Object? oldPrice = freezed,
     Object? reviewsAverage = freezed,
     Object? reviewsCount = freezed,
-    Object? saleMonths = freezed,
     Object? salePrice = freezed,
     Object? stickers = freezed,
   }) {
@@ -276,10 +268,6 @@ class __$$ProductImplCopyWithImpl<$Res>
           ? _value.reviewsCount
           : reviewsCount // ignore: cast_nullable_to_non_nullable
               as int?,
-      saleMonths: freezed == saleMonths
-          ? _value._saleMonths
-          : saleMonths // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
       salePrice: freezed == salePrice
           ? _value.salePrice
           : salePrice // ignore: cast_nullable_to_non_nullable
@@ -309,11 +297,9 @@ class _$ProductImpl implements _Product {
       @JsonKey(name: "old_price") this.oldPrice,
       @JsonKey(name: "reviews_average") this.reviewsAverage,
       @JsonKey(name: "reviews_count") this.reviewsCount,
-      @JsonKey(name: "sale_months") final List<String>? saleMonths,
       @JsonKey(name: "sale_price") this.salePrice,
       final List<Sticker>? stickers})
-      : _saleMonths = saleMonths,
-        _stickers = stickers;
+      : _stickers = stickers;
 
   factory _$ProductImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProductImplFromJson(json);
@@ -349,17 +335,8 @@ class _$ProductImpl implements _Product {
   @override
   @JsonKey(name: "reviews_count")
   final int? reviewsCount;
-  final List<String>? _saleMonths;
-  @override
-  @JsonKey(name: "sale_months")
-  List<String>? get saleMonths {
-    final value = _saleMonths;
-    if (value == null) return null;
-    if (_saleMonths is EqualUnmodifiableListView) return _saleMonths;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
+// @JsonKey(name: "sale_months")
+// List<String>? saleMonths,
   @override
   @JsonKey(name: "sale_price")
   final int? salePrice;
@@ -375,7 +352,7 @@ class _$ProductImpl implements _Product {
 
   @override
   String toString() {
-    return 'Product(allCount: $allCount, availability: $availability, axiomMonthlyPrice: $axiomMonthlyPrice, benefit: $benefit, discountPrice: $discountPrice, finishPrice: $finishPrice, id: $id, image: $image, name: $name, oldPrice: $oldPrice, reviewsAverage: $reviewsAverage, reviewsCount: $reviewsCount, saleMonths: $saleMonths, salePrice: $salePrice, stickers: $stickers)';
+    return 'Product(allCount: $allCount, availability: $availability, axiomMonthlyPrice: $axiomMonthlyPrice, benefit: $benefit, discountPrice: $discountPrice, finishPrice: $finishPrice, id: $id, image: $image, name: $name, oldPrice: $oldPrice, reviewsAverage: $reviewsAverage, reviewsCount: $reviewsCount, salePrice: $salePrice, stickers: $stickers)';
   }
 
   @override
@@ -403,8 +380,6 @@ class _$ProductImpl implements _Product {
                 other.reviewsAverage == reviewsAverage) &&
             (identical(other.reviewsCount, reviewsCount) ||
                 other.reviewsCount == reviewsCount) &&
-            const DeepCollectionEquality()
-                .equals(other._saleMonths, _saleMonths) &&
             (identical(other.salePrice, salePrice) ||
                 other.salePrice == salePrice) &&
             const DeepCollectionEquality().equals(other._stickers, _stickers));
@@ -426,7 +401,6 @@ class _$ProductImpl implements _Product {
       oldPrice,
       reviewsAverage,
       reviewsCount,
-      const DeepCollectionEquality().hash(_saleMonths),
       salePrice,
       const DeepCollectionEquality().hash(_stickers));
 
@@ -460,7 +434,6 @@ abstract class _Product implements Product {
       @JsonKey(name: "old_price") final int? oldPrice,
       @JsonKey(name: "reviews_average") final int? reviewsAverage,
       @JsonKey(name: "reviews_count") final int? reviewsCount,
-      @JsonKey(name: "sale_months") final List<String>? saleMonths,
       @JsonKey(name: "sale_price") final int? salePrice,
       final List<Sticker>? stickers}) = _$ProductImpl;
 
@@ -496,10 +469,8 @@ abstract class _Product implements Product {
   int? get reviewsAverage;
   @override
   @JsonKey(name: "reviews_count")
-  int? get reviewsCount;
-  @override
-  @JsonKey(name: "sale_months")
-  List<String>? get saleMonths;
+  int? get reviewsCount; // @JsonKey(name: "sale_months")
+// List<String>? saleMonths,
   @override
   @JsonKey(name: "sale_price")
   int? get salePrice;

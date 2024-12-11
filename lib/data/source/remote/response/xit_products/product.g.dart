@@ -20,13 +20,10 @@ _$ProductImpl _$$ProductImplFromJson(Map<String, dynamic> json) =>
       oldPrice: (json['old_price'] as num?)?.toInt(),
       reviewsAverage: (json['reviews_average'] as num?)?.toInt(),
       reviewsCount: (json['reviews_count'] as num?)?.toInt(),
-      saleMonths: /*(json['sale_months'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList()*/ null,
       salePrice: (json['sale_price'] as num?)?.toInt(),
-      stickers: /*(json['stickers'] as List<dynamic>?)
+      stickers: (json['stickers'] as List<dynamic>?)
           ?.map((e) => Sticker.fromJson(e as Map<String, dynamic>))
-          .toList()*/ null,
+          .toList(),
     );
 
 Map<String, dynamic> _$$ProductImplToJson(_$ProductImpl instance) =>
@@ -43,7 +40,6 @@ Map<String, dynamic> _$$ProductImplToJson(_$ProductImpl instance) =>
       'old_price': instance.oldPrice,
       'reviews_average': instance.reviewsAverage,
       'reviews_count': instance.reviewsCount,
-      'sale_months': instance.saleMonths,
       'sale_price': instance.salePrice,
       'stickers': instance.stickers?.map((e) => e.toJson()).toList(),
     };
