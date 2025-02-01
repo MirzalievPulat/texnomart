@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:texnomart/data/source/remote/response/charracters/charracters.dart';
 
-class AllFeatures extends StatefulWidget {
-  const AllFeatures({super.key});
+class AllFeatures extends StatelessWidget {
+  final List<Datum> charracters;
+  const AllFeatures({super.key, required this.charracters});
 
-  @override
-  State<AllFeatures> createState() => _AllFeaturesState();
-}
-
-class _AllFeaturesState extends State<AllFeatures> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.yellow,
         title: const Text(
@@ -18,22 +16,15 @@ class _AllFeaturesState extends State<AllFeatures> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
         ),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Title(name: "Asosiy xususiyatlar",),
-            InfoTile(name: "Brend", info: "Premier"),
-            InfoTile(name: "Brend", info: "Premier"),
-            InfoTile(name: "Brend", info: "Premier"),
-            Title(name: "Asosiy xususiyatlar",),
-            InfoTile(name: "Brend a;sdlfBrend a;sdlfBrend a;sdlf", info: "Premier"),
-            InfoTile(name: "Brend", info: "Premier"),
-            InfoTile(name: "Brend", info: "Premier"),
-            SizedBox(
+            for(final datum in charracters)GroupItems(datum: datum,),
+            const SizedBox(
               height: 16,
             )
           ],
@@ -42,6 +33,20 @@ class _AllFeaturesState extends State<AllFeatures> {
     );
   }
 }
+
+class GroupItems extends StatelessWidget {
+  final Datum datum;
+  const GroupItems({super.key, required this.datum});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Title(name: datum.name??""),
+      for(final char in datum.characters??[]) InfoTile(name: char.name??"", info: char.value??"")
+    ],);
+  }
+}
+
 
 class Title extends StatelessWidget {
   final String name;

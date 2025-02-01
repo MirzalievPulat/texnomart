@@ -4,6 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:texnomart/data/source/local/model/top_category.dart';
+import 'package:texnomart/data/source/remote/response/available_strores/available_stores.dart';
+import 'package:texnomart/data/source/remote/response/charracters/charracters.dart';
+import 'package:texnomart/data/source/remote/response/description/description.dart';
 import 'package:texnomart/data/source/remote/response/katalog/katalog.dart';
 import 'package:texnomart/presentation/home/home_screen.dart';
 
@@ -26,10 +29,18 @@ abstract class ProductsApi{
   @GET("v1/category/chips")
   Future<CategoryTop> getTopCategories(@Query("slug") String slug);
 
-  // @GET('common/v1/search/filters')
-  // Future<ProductAllCategory> getSelectedCategory({
-  //   @Query('category_all') required String slug,
-  //   @Query('sort') String sort = '-popular',
-  //   @Query('page') int page = 1,
-  // });
+  @GET('v1/product/characters')
+  Future<Charracters> getCharracters({
+    @Query('id') required int id,
+  });
+
+  @GET('v1/product/description')
+  Future<Description> getDescription({
+    @Query('id') required int id,
+  });
+
+  @GET('v1/product/available-stores')
+  Future<AvailableStores> getAvailableStores({
+    @Query('id') required int id,
+  });
 }

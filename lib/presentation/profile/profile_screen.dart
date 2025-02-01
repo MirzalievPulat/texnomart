@@ -94,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
                         InkWell(
                           onTap: () {
 
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => const MapScreen(),));
+                           Navigator.push(context, MaterialPageRoute(builder: (context) => MapScreen(),));
                           },
                           child: const Tile(
                               name: "Bizning do'konlarimiz",

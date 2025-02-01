@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:texnomart/data/source/local/model/product_hive.dart';
 import 'package:texnomart/di/di.dart';
 import 'package:texnomart/presentation/category/category_screen.dart';
@@ -88,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                           readOnly: true,
                           decoration: InputDecoration(
                             contentPadding:
-                            const EdgeInsets.symmetric(vertical: 10),
+                                const EdgeInsets.symmetric(vertical: 10),
                             alignLabelWithHint: true,
                             filled: true,
                             fillColor: Colors.white,
@@ -125,12 +126,9 @@ class HomeScreen extends StatelessWidget {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width,
+                              width: MediaQuery.of(context).size.width,
                               margin:
-                              const EdgeInsets.symmetric(horizontal: 4.0),
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   image: DecorationImage(
@@ -182,15 +180,13 @@ class HomeScreen extends StatelessWidget {
                             height: 290,
                             child: switch (state.status) {
                               null => const SizedBox(),
-                              Status.loading =>
-                              const Center(
-                                  child: CircularProgressIndicator(
-                                      color: Colors.yellow)),
-                              Status.error =>
-                                  Center(
-                                      child: Text(
-                                          state.errorMessage ??
-                                              "Unknown error")),
+                              Status.loading => Shimmer.fromColors(
+                                  baseColor: Colors.grey[400]??Colors.grey,
+                                  highlightColor: Colors.grey[100]??Colors.grey,
+                                  child: _xitProducts(state.xitProducts)),
+                              Status.error => Center(
+                                  child: Text(
+                                      state.errorMessage ?? "Unknown error")),
                               Status.success => _xitProducts(state.xitProducts),
                             }),
                       ),
@@ -232,120 +228,126 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return (index == topCategories.length ~/ 2)
                         ? InkWell(
-                      onTap: () {
-                        context.read<ContainerBloc>().add(GoCatalogPage());
-                      },
-                      child: Container(
-                        height: 190,
-                        width: 160,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Barcha kategoryalar",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 10),
+                            onTap: () {
+                              context
+                                  .read<ContainerBloc>()
+                                  .add(GoCatalogPage());
+                            },
+                            child: Container(
+                              height: 190,
+                              width: 160,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Barcha kategoryalar",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10),
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.black,
+                                    size: 16,
+                                  )
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.black,
-                              size: 16,
-                            )
-                          ],
-                        ),
-                      ),
-                    )
+                          )
                         : Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      BlocProvider(
-                                        create: (context) =>
-                                        CategoryBloc()
-                                          ..add(InitCategory(
-                                              topCategories[index * 2].slug)),
-                                        child: const CategoryScreen(),
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BlocProvider(
+                                          create: (context) => CategoryBloc()
+                                            ..add(InitCategory(
+                                                topCategories[index * 2].slug)),
+                                          child: const CategoryScreen(),
+                                        ),
+                                      ));
+                                },
+                                child: SizedBox(
+                                  height: 90,
+                                  width: 120,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              topCategories[index * 2].image),
+                                          fit: BoxFit.cover),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        topCategories[index * 2].name,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 10),
                                       ),
-                                ));
-                          },
-                          child: SizedBox(
-                            height: 90,
-                            width: 120,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        topCategories[index * 2].image),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  topCategories[index * 2].name,
-                                  style: const TextStyle(
-                                      color: Colors.black, fontSize: 10),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      MultiBlocProvider(providers: [
-                                          BlocProvider(create: (context) =>
-                                  CategoryBloc()..add(InitCategory(
-                                    topCategories[index * 2 + 1].slug)),
-                                          ),
-                            BlocProvider(create: (context) =>
-                            getIt.get<ContainerBloc>())],
-                                  child: const CategoryScreen(),
-                            ),)
-                            );
-                          },
-                          child: SizedBox(
-                            height: 90,
-                            width: 120,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        topCategories[index * 2 + 1]
-                                            .image),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(16),
+                              const SizedBox(
+                                height: 8,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  topCategories[index * 2 + 1].name,
-                                  style: const TextStyle(
-                                      color: Colors.black, fontSize: 10),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(
+                                              create: (context) =>
+                                                  CategoryBloc()
+                                                    ..add(InitCategory(
+                                                        topCategories[
+                                                                index * 2 + 1]
+                                                            .slug)),
+                                            ),
+                                            BlocProvider(
+                                                create: (context) =>
+                                                    getIt.get<ContainerBloc>())
+                                          ],
+                                          child: const CategoryScreen(),
+                                        ),
+                                      ));
+                                },
+                                child: SizedBox(
+                                  height: 90,
+                                  width: 120,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              topCategories[index * 2 + 1]
+                                                  .image),
+                                          fit: BoxFit.cover),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        topCategories[index * 2 + 1].name,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 10),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    );
+                              )
+                            ],
+                          );
                   },
                   separatorBuilder: (context, index) {
                     return const SizedBox(width: 12);
@@ -363,33 +365,31 @@ class HomeScreen extends StatelessWidget {
     return (products == null)
         ? const Center(child: Text("No products"))
         : ListView.separated(
-        scrollDirection: Axis.horizontal,
-        clipBehavior: Clip.none,
-        itemBuilder: (context, index) {
-          return InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          BlocProvider(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            itemBuilder: (context, index) {
+              return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
                             create: (context) =>
-                            DetailBloc()
-                              ..add(InitEvent(products[index])),
+                                DetailBloc()..add(InitEvent(products[index])),
                             child: const DetailScreen(),
                           ),
-                    ));
-              },
-              child: ProductWidget(
-                product: products[index],
-                secondCartClick: () {},
-              ));
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(
-            width: 12,
-          );
-        },
-        itemCount: 20);
+                        ));
+                  },
+                  child: ProductWidget(
+                    product: products[index],
+                    secondCartClick: () {},
+                  ));
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(
+                width: 12,
+              );
+            },
+            itemCount: 20);
   }
 }

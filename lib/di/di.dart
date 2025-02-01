@@ -11,6 +11,7 @@ import 'package:texnomart/presentation/container/container_bloc.dart';
 
 final getIt = GetIt.instance;
 
+
 void setUp(){
   getIt.registerSingleton<Dio>(Dio(
     BaseOptions(contentType: "application/json",

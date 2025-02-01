@@ -20,6 +20,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try{
         final result = await repository.getXitProducts();
         emit(state.copyWith(status: Status.success, xitProducts: result));
+        print("#####################Xit products#################################");
+        for(ProductHive p in result){
+          print(p);
+        }
       } on DioException catch(e){
         emit(state.copyWith(status: Status.error,errorMessage: e.response?.statusCode.toString()??"aaa"));
       }

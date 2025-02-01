@@ -5,6 +5,10 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Orders");
+    return ListView.builder(
+      itemCount: 40,
+      itemBuilder: (context, index) {
+      return ListTile(title: Text("ListTile ${index}"),);
+    },);
   }
 }

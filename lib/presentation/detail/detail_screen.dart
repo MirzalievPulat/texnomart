@@ -2,6 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:texnomart/data/source/remote/response/charracters/charracters.dart';
+import 'package:texnomart/presentation/AllFeatures/all_features_screen.dart';
+import 'package:texnomart/presentation/available_stores/available_stores_screen.dart';
+import 'package:texnomart/presentation/description/description_screen.dart';
 
 import '../../utils/extensions.dart';
 import '../home/home_bloc.dart';
@@ -17,11 +21,19 @@ class DetailScreen extends StatelessWidget {
     return BlocConsumer<DetailBloc, DetailState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if(state.status == Status.loading){
-          return const Center(child: CircularProgressIndicator(color: Colors.yellow,),);
+        if (state.status == Status.loading) {
+          return Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.yellow,
+                ),
+              ));
         }
-        if(state.status == Status.error){
-          return Center(child: Text(state.errorMessage??"unknown error"),);
+        if (state.status == Status.error) {
+          return Center(
+            child: Text(state.errorMessage ?? "unknown error"),
+          );
         }
 
         final isLiked = state.product?.liked ?? false;
@@ -54,7 +66,7 @@ class DetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(32),
-                  onTap: (){
+                  onTap: () {
                     context.read<DetailBloc>().add(DetailLikeClick());
                   },
                   child: Icon(
@@ -118,7 +130,17 @@ class DetailScreen extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                _buildInfoRow("Do'konlarda mavjudligi"),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AvailableStoresScreen(
+                              id: state.product?.id ?? 0,
+                            ),
+                          ));
+                    },
+                    child: _buildInfoRow("Do'konlarda mavjudligi")),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Divider(
@@ -127,7 +149,15 @@ class DetailScreen extends StatelessWidget {
                     height: 0,
                   ),
                 ),
-                _buildInfoRow("Tavsif"),
+                InkWell(onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DescriptionScreen(
+                          id: state.product?.id ?? 0,
+                        ),
+                      ));
+                },child: _buildInfoRow("Tavsif")),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Divider(
@@ -136,11 +166,25 @@ class DetailScreen extends StatelessWidget {
                     height: 0,
                   ),
                 ),
-                _buildInfoRow("Xususiyatlari"),
-                _buildAboutProductRow('Brend', 'Aksion'),
-                _buildAboutProductRow('Unumdorligi', '0.5 kg/daq'),
-                _buildAboutProductRow('Quvvati', '220 Vt'),
-                _buildAllFeatures(context),
+                InkWell(onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllFeatures(
+                          charracters: state.charracters??[],
+                        ),
+                      ));
+                },child: _buildInfoRow("Xususiyatlari")),
+                _buildAboutProductRow(
+                    state.charracters?[0].characters?[0].name ?? "",
+                    state.charracters?[0].characters?[0].value ?? ""),
+                _buildAboutProductRow(
+                    state.charracters?[0].characters?[1].name ?? "",
+                    state.charracters?[0].characters?[1].value ?? ""),
+                _buildAboutProductRow(
+                    state.charracters?[0].characters?[2].name ?? "",
+                    state.charracters?[0].characters?[2].name ?? ""),
+                _buildAllFeatures(context, state.charracters ?? []),
                 _buildCommentsRow(12),
                 const SizedBox(
                   height: 24,
@@ -242,7 +286,7 @@ class DetailScreen extends StatelessWidget {
     print("credit: $credit");
     final credit1 = credit?.substring(0, credit.indexOf(" /")) ?? "------";
     final credit2 = credit?.substring(credit.indexOf("/")) ?? "-------";
-    final credit11 = credit1.substring(0,credit1.length-3);
+    final credit11 = credit1.substring(0, credit1.length - 3);
     print("credit1: $credit1 credit2: $credit2");
     return Container(
       width: double.infinity,
@@ -402,28 +446,22 @@ class DetailScreen extends StatelessWidget {
   }
 
   Widget _buildInfoRow(String title) {
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding:
-            const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            ),
-            const Spacer(),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.grey,
-              size: 16,
-            )
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+          ),
+          const Spacer(),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: Colors.grey,
+            size: 16,
+          )
+        ],
       ),
     );
   }
@@ -435,14 +473,25 @@ class DetailScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16.0),
         child: Row(
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            Expanded(
+              child: Text(
+                title,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.start,
+              ),
             ),
-            const Spacer(),
-            Text(
-              power,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            Expanded(
+              child: Text(
+                power,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+              ),
             ),
           ],
         ),
@@ -450,12 +499,18 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAllFeatures(BuildContext context) {
+  Widget _buildAllFeatures(BuildContext context, List<Datum> charracters) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: InkWell(
         onTap: () {
-          // add to database
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AllFeatures(
+                  charracters: charracters,
+                ),
+              ));
         },
         child: Container(
           height: 50,

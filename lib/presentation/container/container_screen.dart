@@ -56,7 +56,6 @@ class ContainerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ContainerBloc, ContainerState>(
-
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(

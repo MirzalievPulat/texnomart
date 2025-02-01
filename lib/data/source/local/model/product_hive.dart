@@ -123,7 +123,7 @@ class ProductHive extends  Equatable {
 ProductHive toProductHive(Product product) {
   return ProductHive(
       axiomMonthlyPrice: product.axiomMonthlyPrice ?? "",
-      finishPrice: product.finishPrice ?? 0,
+      finishPrice: product.salePrice ?? 0,
       id: product.id ?? 0,
       image: product.image ?? "",
       name: product.name ?? "",

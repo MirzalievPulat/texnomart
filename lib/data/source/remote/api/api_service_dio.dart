@@ -1,6 +1,7 @@
 
 
 
+// import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:texnomart/data/source/remote/response/category_items/category_items.dart';
 import 'package:texnomart/data/source/remote/response/store_locations/store_locations.dart';
@@ -18,7 +19,6 @@ class ApiServiceDio{
     // Add ChuckerDioInterceptor for network debugging
     // _dio.interceptors.add(ChuckerDioInterceptor());
   }
-
 
   Future<CategoryItems> getCategoryItems(String slug)async {
     try{

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:texnomart/data/source/remote/api/api_service_dio.dart';
+import 'package:texnomart/data/source/remote/response/available_strores/available_stores.dart';
 import 'package:texnomart/data/source/remote/response/store_locations/store_locations.dart';
 import 'package:texnomart/di/di.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +13,8 @@ import '../../data/source/local/map_service/app_location.dart';
 import '../../data/source/local/model/app_lat_long.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final StoreAddress? storeAddress;
+  const MapScreen({super.key,this.storeAddress});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -31,15 +32,21 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.yellow,
-        title: const Text("Barcha do'konlar"),
+        title: const Text("Do'konlar"),
       ),
       body: YandexMap(
         onMapCreated: (controller) {
           mapControllerCompleter.complete(controller);
-          getBranches(context);
+          if(widget.storeAddress == null){
+            getBranches(context);
+          }else{
+            addMapObjects([widget.storeAddress!.toOpenedStore()]);
+          }
+
         },
         onMapTap: (argument) {
           print("${argument.latitude} and ${argument.longitude}");
@@ -83,7 +90,7 @@ class _MapScreenState extends State<MapScreen> {
             latitude: appLatLong.lat,
             longitude: appLatLong.long,
           ),
-          zoom: 20,
+          zoom: 5,
         ),
       ),
     );
@@ -91,23 +98,29 @@ class _MapScreenState extends State<MapScreen> {
 
   void getBranches(BuildContext context) async {
     final result = await getIt.get<ApiServiceDio>().getBranches();
-    for (OpenedStore element in result.data!.data![0].openedStores ?? []) {
+    addMapObjects(result.data!.data![0].openedStores ?? []);
+
+  }
+
+  void addMapObjects(List<OpenedStore> stores){
+    for (OpenedStore element in stores) {
       print(element.name);
-      //print();
       mapObjects.add(PlacemarkMapObject(
           consumeTapEvents: true,
           onTap: (mapObject, point) {
             print(" map object tapped ${element.description}"); //here
             showModalBottomSheet(
-              context: context,backgroundColor: Colors.white,
+              context: context,
+              backgroundColor: Colors.white,
               builder: (context) => bottomSheet(element),
             );
           },
+          opacity: 1,
           mapId: MapObjectId(element.id.toString()),
           icon: PlacemarkIcon.single(PlacemarkIconStyle(
-              scale: 0.1,
+              scale: 1,
               image: BitmapDescriptor.fromAssetImage(
-                  'assets/images/texnomart_logo.jpg'))),
+                  'assets/images/location.png'))),
           point: Point(
               latitude: double.parse(element.lat ?? "0"),
               longitude: double.parse(element.long ?? "0"))));
@@ -132,35 +145,69 @@ class _MapScreenState extends State<MapScreen> {
             ),
             Row(
               children: [
-                const Icon(Icons.shopping_bag_outlined,color: Colors.grey,),
-                const SizedBox(width: 8,),
+                const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
                 Expanded(
-                  child: Text(element.address??"Unknown place",
-                  style: const TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 16),maxLines: 2,overflow: TextOverflow.ellipsis,),
+                  child: Text(
+                    element.address ?? "Unknown place",
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
             Row(
               children: [
-                const Icon(Icons.access_time_outlined,color: Colors.grey,),
-                const SizedBox(width: 8,),
-                Text("Du-Yak(${element.workTime})",
-                style: const TextStyle(color: Colors.black54),maxLines: 1,overflow: TextOverflow.ellipsis,),
+                const Icon(
+                  Icons.access_time_outlined,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  "Du-Yak(${element.workTime})",
+                  style: const TextStyle(color: Colors.black54),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
-            const SizedBox(height: 8,),
+            const SizedBox(
+              height: 8,
+            ),
             Row(
               children: [
-                const Icon(Icons.phone,color: Colors.grey,),
-                const SizedBox(width: 8,),
-                Text(element.phone??"--",
-                style: const TextStyle(color: Colors.black54),maxLines: 1,overflow: TextOverflow.ellipsis,),
+                const Icon(
+                  Icons.phone,
+                  color: Colors.grey,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  element.phone ?? "--",
+                  style: const TextStyle(color: Colors.black54),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
-
-            const SizedBox(height: 16,),
+            const SizedBox(
+              height: 16,
+            ),
             Align(
               alignment: Alignment.centerLeft,
               child: IntrinsicWidth(
@@ -169,26 +216,38 @@ class _MapScreenState extends State<MapScreen> {
                   // highlightColor: Colors.yellow,
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    if(element.lat != null && element.long != null){
+                    if (element.lat != null && element.long != null) {
                       // openGoogleMaps(double.parse(element.lat!), double.parse(element.long!));
-                      openRoute(double.parse(element.lat!), double.parse(element.long!));
-                    }else{
+                      openRoute(double.parse(element.lat!),
+                          double.parse(element.long!));
+                    } else {
                       Fluttertoast.showToast(msg: "Not valid location data");
                     }
-
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]??Colors.grey,width: 2)
-                    ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: Colors.grey[300] ?? Colors.grey, width: 2)),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          Icon(Icons.route,color: Colors.yellow[700]??Colors.yellow,),
-                          const SizedBox(width: 8,),
-                          const Text("Marshrut",style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w700),)
+                          Icon(
+                            Icons.route,
+                            color: Colors.yellow[700] ?? Colors.yellow,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text(
+                            "Marshrut",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700),
+                          )
                         ],
                       ),
                     ),
@@ -196,13 +255,14 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 16,)
+            const SizedBox(
+              height: 16,
+            )
           ],
         ),
       ),
     );
   }
-
 
   Future<void> openRoute(double lat, double lon) async {
     // Get current location
@@ -221,8 +281,8 @@ class _MapScreenState extends State<MapScreen> {
 
     // Try opening Google Maps
     // if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      print("object1");
-      await launchUrl(Uri.parse(googleMapsUrl));
+    print("object1");
+    await launchUrl(Uri.parse(googleMapsUrl));
     // }
     print("object2");
     // If Google Maps is not available, try Yandex Maps
@@ -243,5 +303,4 @@ class _MapScreenState extends State<MapScreen> {
       print("Could not open Google Maps");
     }
   }
-
 }
